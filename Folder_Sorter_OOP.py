@@ -1,8 +1,5 @@
 from pathlib import Path
-import re
 import shutil
-import os
-import time
 import logging
 class Logger_Manager:
     """
@@ -176,17 +173,18 @@ class File_Manager:
         self.logger.log_info(f'A new extension {ext} was added to the extensions dictionary!')
 
         
-    def unfold_files(self):
-        """Move all files from the sub-directories of 'base_path' to base_path and delete the folders"""
-        for file_path in self.base_path.iterdir():
-            if file_path.is_dir():
-                for file in file_path.iterdir():
-                    if file.is_file():
-                        source = file
-                        destination = self.base_path/file.name
-                        self.move_file(source, destination)
-                    
-        self.directory.delete_empty(self.base_path)
+    def unfold_files(self, path):
+        """Moves files from subdirectories back to the parent directory and deletes empty folders afterwards"""
+        self.path = Path(path)
+        for file_path in self.directory.scan_all(self.path):
+            if file_path.is_file():
+                source = file_path
+                destination = self.path.parent/file_path.name
+                self.move_file(source, destination)
+                self.logger.log_info(f"{self.path} was successfully unfolded")
+            self.directory.delete_empty(self.path)
+        self.directory.delete_empty(self.path)
+    
     def rename_file(self, file_name):
         """Renames a file found by `file_name` (stem without suffix).
 
@@ -258,12 +256,12 @@ if __name__ == "__main__":
     try:
         Extensions = {'.txt': 'Text Files', '.jpeg':'Images', '.jpg': 'Images', '.png': 'Images', '.doc': 'Word Documents', '.docx': 'Word Documents', '.ppt':
                         'Powerpoint Documents', '.pptx': 'Powerpoint Documents', '.pdf': 'PDF Files', '.xlsx': 'Excel Documents', '.xls': 'Excel Documents'}
-        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS", Extensions, Logger, DM)
+        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\New folder\Zoom", Extensions, Logger, DM)
         #Sorter.fold_file_by_extension()
         #Sorter.unfold_files()
         #Sorter.directory.delete_empty(Sorter.base_path)
         #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-        Sorter.delete_file(input("Enter the name of the file to be deleted: "))
+        Sorter.unfold_files(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS\Powerpoint Documents")
 
     except Exception as e:
         Logger.log_error(f"Critical error: {e}")
