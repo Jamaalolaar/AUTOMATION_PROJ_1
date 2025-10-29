@@ -94,11 +94,40 @@ class File_Manager:
     """
     Handles file organization, movement, and extension management within a specified directory
     """
+    # Default extensions mapping shared as a class-level constant. Use a copy in __init__ to
+    # avoid accidental shared-mutable state between instances.
+    EXTENSIONS_DEFAULT = {
+        '.txt': 'Text Files',
+        '.jpeg': 'Images',
+        '.jpg': 'Images',
+        '.png': 'Images',
+        '.doc': 'Word Documents',
+        '.docx': 'Word Documents',
+        '.ppt': 'Powerpoint Documents',
+        '.pptx': 'Powerpoint Documents',
+        '.pdf': 'PDF Files',
+        '.xlsx': 'Excel Documents',
+        '.xls': 'Excel Documents'
+    }
     def __init__(self, base_path, extension_dict, logger, directory):
-        """Initialize the FileHandler.:param base_path: Root directory where file operations will occur.:param logger: Logger instance (from LoggerManager).
-        param:extension_dict: A dictionary that holds possible file extensions and the desired folder names for each extension"""
+        """Initialize the FileHandler.
+
+        Args:
+            base_path: Root directory where file operations will occur.
+            extension_dict: Optional dict that maps extensions to folder names. If None,
+                File_Manager.EXTENSIONS_DEFAULT will be used (a copy is created per instance).
+            logger: Logger instance (from Logger_Manager).
+            directory: Directory_Manager instance.
+        """
         self.base_path = Path(base_path)
-        self.extension_dict = extension_dict
+        # Allow callers to omit extension_dict; use a shallow copy of the class default to
+        # avoid shared-mutable-state bugs. If a dict is provided, merge it over defaults so
+        # callers can override or extend the defaults.
+        if extension_dict is None:
+            self.extension_dict = dict(self.EXTENSIONS_DEFAULT)
+        else:
+            # create a merged copy: defaults overridden by provided mapping
+            self.extension_dict = {**self.EXTENSIONS_DEFAULT, **dict(extension_dict)}
         self.logger = logger
         self.directory = directory
         
@@ -254,9 +283,8 @@ Logger = Logger_Manager()
 DM = Directory_Manager(Logger)
 if __name__ == "__main__":
     try:
-        Extensions = {'.txt': 'Text Files', '.jpeg':'Images', '.jpg': 'Images', '.png': 'Images', '.doc': 'Word Documents', '.docx': 'Word Documents', '.ppt':
-                        'Powerpoint Documents', '.pptx': 'Powerpoint Documents', '.pdf': 'PDF Files', '.xlsx': 'Excel Documents', '.xls': 'Excel Documents'}
-        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\New folder\Zoom", Extensions, Logger, DM)
+        # Use class default extensions mapping; pass None so File_Manager will copy EXTENSIONS_DEFAULT
+        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\New folder\Zoom", None, Logger, DM)
         #Sorter.fold_file_by_extension()
         #Sorter.unfold_files()
         #Sorter.directory.delete_empty(Sorter.base_path)
