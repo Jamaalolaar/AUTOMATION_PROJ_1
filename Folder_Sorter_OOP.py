@@ -7,7 +7,7 @@ class Logger_Manager:
     """
     Manages and configures separate loggers for info and error messages
     """
-    def __init__(self, info_log_file = "Info Logs.log", error_log_file = "Error Logs.log"):
+    def __init__(self, config):
         """
         Initialize Logger_Manager with separate info and error loggers
 
@@ -15,9 +15,11 @@ class Logger_Manager:
         info_log_file: Path to the info log file
         error_log_file: Path to the error log file
         """
-        self.info_logger = self._setup_logger("info_logger","Info Logs.log")
-        self.error_logger = self._setup_logger("error_logger", "Error Logs.log")
-        
+        self.config = config.get('log_files', {})
+        info_log_file = self.config.get('log_files', {}).get('Info_log', 'Info Logs.log')
+        error_log_file = self.config.get('log_files', {}).get('Error_log', 'Error logs.log')
+        self.info_logger = self._setup_logger("info_logger", self.config.get('Info_log'))
+        self.error_logger = self._setup_logger("error_logger",self.config.get('Error_log'))
     def _setup_logger(self, name, log_file):
         """
         Create and configure a logger that writes debug messages to a specified file
@@ -103,13 +105,6 @@ class File_Manager:
         '.jpeg': 'Images',
         '.jpg': 'Images',
         '.png': 'Images',
-        '.doc': 'Word Documents',
-        '.docx': 'Word Documents',
-        '.ppt': 'Powerpoint Documents',
-        '.pptx': 'Powerpoint Documents',
-        '.pdf': 'PDF Files',
-        '.xlsx': 'Excel Documents',
-        '.xls': 'Excel Documents'
     }
     def __init__(self, base_path, extension_dict, logger, directory):
         """Initialize the FileHandler.
@@ -281,15 +276,16 @@ class File_Manager:
 
         
 
-
-Logger = Logger_Manager()
+Config = ConfigManager().config_data
+Logger = Logger_Manager(Config)
 DM = Directory_Manager(Logger)
+extensions = ConfigManager().config_data
 if __name__ == "__main__":
     try:
+        
         # Use class default extensions mapping; pass None so File_Manager will copy EXTENSIONS_DEFAULT
-        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS", None, Logger, DM)
-        Sorter.rename_file('JURISPUDENCE – PSN CONSTITUTION (intro) - PCL 323_1_1')
-        #Sorter.unfold_files()
+        #Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS", extensions, Logger, DM)
+        Sorter.unfold_files()
         #Sorter.directory.delete_empty(Sorter.base_path)
         #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
         #Sorter.unfold_files(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS\Powerpoint Documents")

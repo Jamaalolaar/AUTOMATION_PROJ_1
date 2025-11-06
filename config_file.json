@@ -1,8 +1,8 @@
 {
     "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\CHAOS",
     "log_files": {
-        "Info_log": "info.log",
-        "Error_log": "error.log"
+        "Info_log": "Info Logs.log",
+        "Error_log": "Error logs.log"
     },
     "extensions": {
         ".txt": "Text Files",
