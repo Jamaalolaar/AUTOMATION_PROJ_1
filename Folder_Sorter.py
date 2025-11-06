@@ -1,8 +1,6 @@
 from pathlib import Path
-import re
 import shutil
 import os
-import time
 import logging
 
 #logging.basicConfig(level= logging.INFO, filename="File Sorter Logs.log", filemode = "w", format="%(asctime)s - %(levelname)s - %(message)s") ( The traditional way of creating logs)
@@ -21,13 +19,14 @@ error_handler.setLevel(logging.ERROR)
 error_handler.setFormatter(formatter)
 
 def file_type(extension, new_ext):
-    patterns = {'.txt': 'Text Files', '.jpeg':'Images', '.jpg': 'Images', '.png': 'Images', '.doc': 'Word Documents', '.docx': 'Word Documents', '.ppt':
+    pattern = {'.txt': 'Text Files', '.jpeg':'Images', '.jpg': 'Images', '.png': 'Images', '.doc': 'Word Documents', '.docx': 'Word Documents', '.ppt':
                 'Powerpoint Documents', '.pptx': 'Powerpoint Documents', '.pdf': 'PDF Files', '.xlsx': 'Excel Documents', '.xls': 'Excel Documents'}
     if extension not in patterns and new_ext != None:
         patterns[extension] = new_ext
     return (patterns.get(extension))
         
 def file_folder():
+    """Groups files into folders based on their extension. It follows the extension-to-folder names mapping provided by the file_type function"""
     extensions = []
     dir_path = Path(input("Input path..."))
 
@@ -39,10 +38,10 @@ def file_folder():
             logger.addHandler(error_handler)
             logger.error(f'An error occurred!!!{e}')
             print("File extension not recognized!!!")
-            response = input(f"Do you want the system to recognize {ext} files? Type yes or no? ")
-            if response == 'yes':
+            response = input(f"Do you want the system to recognize {ext} files? Type y/n? ")
+            if response.lower() == 'y':
                 folder_name = input("Enter the desired folder name for this type of file ")
-            else:
+            elif response.lower() == 'n'
                 folder_name = 'Others'
             new_path = Path(dir_path/file_type(ext, folder_name))
             logger.info(f'A new folder {folder_name} was created')
@@ -65,8 +64,6 @@ def file_unfolder():
                     source = file
                     destination = dir_path/file.name
                     shutil.move(str(source), str(destination))
-                
-            file_path.rmdir()
                 
 
     

@@ -32,4 +32,3 @@ Notes
 - The code uses composition: `File_Manager` receives a `Directory_Manager` and a `Logger_Manager` instance. This keeps responsibilities separate and makes testing easier.
 - Be careful when using `git push --force` — it rewrites remote history and can cause problems for collaborators.
 
-If you want, I can add a short example section with common command examples or create unit tests for the main behaviors.

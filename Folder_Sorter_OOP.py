@@ -1,6 +1,8 @@
 from pathlib import Path
 import shutil
 import logging
+from Config_Manager import ConfigManager
+
 class Logger_Manager:
     """
     Manages and configures separate loggers for info and error messages
@@ -9,26 +11,26 @@ class Logger_Manager:
         """
         Initialize Logger_Manager with separate info and error loggers
 
-        :param self: Instance of Logger_Manager
-        :param info_log_file: Path to the info log file
-        :param error_log_file: Path to the error log file
+        self: Instance of Logger_Manager
+        info_log_file: Path to the info log file
+        error_log_file: Path to the error log file
         """
-        self.info_logger = self._setup_logger("info_logger","Info.log")
-        self.error_logger = self._setup_logger("error_logger", "Error.log")
+        self.info_logger = self._setup_logger("info_logger","Info Logs.log")
+        self.error_logger = self._setup_logger("error_logger", "Error Logs.log")
         
     def _setup_logger(self, name, log_file):
         """
         Create and configure a logger that writes debug messages to a specified file
 
-        :param self: Instance of Logger_Manager
-        :param name: Name of the logger to create
-        :param log_file: Path to the log file for storing log messages
-        :return: Configured logger instance
-        :rtype: Logger
+        self: Instance of Logger_Manager
+        name: Name of the logger to create
+        log_file: Path to the log file for storing log messages
+        return: Configured logger instance
+        return type: Logger
         """
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
-        #Same formatter to be used for all handlers
+        
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
         #Handler Creation
@@ -181,6 +183,7 @@ class File_Manager:
                             counter += 1
                     
                     self.move_file(file_path, dest_path)
+                    self.logger.log_info(f'File was successfully {file_path.name} moved to {dest_path}') 
                 except Exception as e:
                     self.logger.log_error(f"Error processing file {file_path}: {e}")
              
@@ -231,18 +234,18 @@ class File_Manager:
                 self.logger.log_info("Rename cancelled: empty name provided.")
                 return
 
-            # Determine new name and extension
+            # Determine the new name and extension
             if Path(user_input).suffix:
                 # User provided an extension
                 new_name = Path(user_input).name
             else:
-                # No extension provided -> keep original extension
+                # No extension provided; hence, keep the original extension
                 new_name = f"{user_input}{old_path.suffix}"
 
-            # Build the new full path properly using pathlib (avoid Path + str)
+            # Build the new full path using pathlib
             new_path = old_path.with_name(new_name) #'new_path = old_path.parent / new_name' also works well
 
-            # If target exists, ask for a new name and restart the process
+            # If target (file name) exists, ask for a new name and restart the process
             candidate = new_path
             if candidate.exists():
                 print("A file with that name already exists. Please provide a different name.")
@@ -284,12 +287,12 @@ DM = Directory_Manager(Logger)
 if __name__ == "__main__":
     try:
         # Use class default extensions mapping; pass None so File_Manager will copy EXTENSIONS_DEFAULT
-        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\New folder\Zoom", None, Logger, DM)
-        #Sorter.fold_file_by_extension()
+        Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS", None, Logger, DM)
+        Sorter.rename_file('JURISPUDENCE – PSN CONSTITUTION (intro) - PCL 323_1_1')
         #Sorter.unfold_files()
         #Sorter.directory.delete_empty(Sorter.base_path)
         #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-        Sorter.unfold_files(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS\Powerpoint Documents")
+        #Sorter.unfold_files(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS\Powerpoint Documents")
 
     except Exception as e:
         Logger.log_error(f"Critical error: {e}")

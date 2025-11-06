@@ -1,0 +1,20 @@
+{
+    "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\CHAOS",
+    "log_files": {
+        "Info_log": "info.log",
+        "Error_log": "error.log"
+    },
+    "extensions": {
+        ".txt": "Text Files",
+        "jpeg": "Images",
+        ".jpg": "Images",
+        ".png": "Images",
+        ".doc": "Word Documents",
+        ".docx": "Word Documents",
+        ".ppt": "Powerpoint Documents",
+        ".pptx": "Powerpoint Documents",
+        ".pdf": "PDF Files",
+        ".xlsx": "Excel Documents",
+        ".xls": "Excel Documents"
+    }
+}
