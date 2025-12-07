@@ -15,11 +15,11 @@ class Logger_Manager:
         info_log_file: Path to the info log file
         error_log_file: Path to the error log file
         """
-        self.config = config.get('log_files', {})
-        info_log_file = self.config.get('log_files', {}).get('Info_log', 'Info Logs.log')
-        error_log_file = self.config.get('log_files', {}).get('Error_log', 'Error logs.log')
-        self.info_logger = self._setup_logger("info_logger", self.config.get('Info_log'))
-        self.error_logger = self._setup_logger("error_logger",self.config.get('Error_log'))
+        self.config_data = config.config_data.get('log_files', {})
+        info_log_file = self.config_data.get('log_files', {}).get('Info_log', 'Info Logs.log')
+        error_log_file = self.config_data.get('log_files', {}).get('Error_log', 'Error logs.log')
+        self.info_logger = self._setup_logger("info_logger", self.config_data.get('Info_log'))
+        self.error_logger = self._setup_logger("error_logger",self.config_data.get('Error_log'))
     def _setup_logger(self, name, log_file):
         """
         Create and configure a logger that writes debug messages to a specified file
@@ -106,25 +106,17 @@ class File_Manager:
         '.jpg': 'Images',
         '.png': 'Images',
     }
-    def __init__(self, base_path, extension_dict, logger, directory):
-        """Initialize the FileHandler.
-
-        Args:
-            base_path: Root directory where file operations will occur.
-            extension_dict: Optional dict that maps extensions to folder names. If None,
-                File_Manager.EXTENSIONS_DEFAULT will be used (a copy is created per instance).
-            logger: Logger instance (from Logger_Manager).
-            directory: Directory_Manager instance.
-        """
+    def __init__(self, config, logger, directory):
+        """Initializes File_Manager with config object, logger, and directory manager."""
+        self.config = config
+        base_path = config.get('base_path')
+        extension_dict = self.config.get('extensions')
         self.base_path = Path(base_path)
-        # Allow callers to omit extension_dict; use a shallow copy of the class default to
-        # avoid shared-mutable-state bugs. If a dict is provided, merge it over defaults so
-        # callers can override or extend the defaults.
+        
         if extension_dict is None:
             self.extension_dict = dict(self.EXTENSIONS_DEFAULT)
         else:
-            # create a merged copy: defaults overridden by provided mapping
-            self.extension_dict = {**self.EXTENSIONS_DEFAULT, **dict(extension_dict)}
+            self.extension_dict = extension_dict
         self.logger = logger
         self.directory = directory
         
@@ -196,7 +188,10 @@ class File_Manager:
 
     def add_new_extension(self, ext):
         """Adds a new extension and its folder name to the extension dictionary 'extension_dict' and logs it"""
-        self.extension_dict[ext] = input(f'Enter the folder_name for {ext} files: ')
+        Folder_name = input(f'Enter the folder_name for {ext} files: ')
+        self.extension_dict[ext] = Folder_name
+        self.config.config_data['extensions'][ext] = Folder_name
+        self.config.update_config(ext, Folder_name)
         self.logger.log_info(f'A new extension {ext} was added to the extensions dictionary!')
 
         
@@ -206,7 +201,7 @@ class File_Manager:
         for file_path in self.directory.scan_all(self.path):
             if file_path.is_file():
                 source = file_path
-                destination = self.path.parent/file_path.name
+                destination = self.path/file_path.name
                 self.move_file(source, destination)
                 self.logger.log_info(f"{self.path} was successfully unfolded")
             self.directory.delete_empty(self.path)
@@ -276,19 +271,18 @@ class File_Manager:
 
         
 
-Config = ConfigManager().config_data
+Config = ConfigManager()
 Logger = Logger_Manager(Config)
 DM = Directory_Manager(Logger)
 extensions = ConfigManager().config_data
 if __name__ == "__main__":
     try:
-        
-        # Use class default extensions mapping; pass None so File_Manager will copy EXTENSIONS_DEFAULT
-        #Sorter = File_Manager(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS", extensions, Logger, DM)
-        Sorter.unfold_files()
+        # Create File_Manager instance
+        Sorter = File_Manager(Config, Logger, DM)
+        Sorter.fold_file_by_extension()
         #Sorter.directory.delete_empty(Sorter.base_path)
         #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-        #Sorter.unfold_files(r"C:\Users\LENOVO\Desktop\AUTOMATION_PROJ_1\CHAOS\Powerpoint Documents")
+        #Sorter.unfold_files(Sorter.base_path)
 
     except Exception as e:
         Logger.log_error(f"Critical error: {e}")

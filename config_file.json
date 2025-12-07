@@ -1,20 +1,29 @@
 {
-    "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\CHAOS",
-    "log_files": {
-        "Info_log": "Info Logs.log",
-        "Error_log": "Error logs.log"
-    },
-    "extensions": {
-        ".txt": "Text Files",
-        "jpeg": "Images",
-        ".jpg": "Images",
-        ".png": "Images",
-        ".doc": "Word Documents",
-        ".docx": "Word Documents",
-        ".ppt": "Powerpoint Documents",
-        ".pptx": "Powerpoint Documents",
-        ".pdf": "PDF Files",
-        ".xlsx": "Excel Documents",
-        ".xls": "Excel Documents"
-    }
+  "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\CHAOS",
+  "log_files": {
+    "Info_log": "Info Logs.log",
+    "Error_log": "Error logs.log"
+  },
+  "extensions": {
+    ".txt": "Text Files",
+    "jpeg": "Images",
+    ".jpg": "Images",
+    ".png": "Images",
+    ".doc": "Word Documents",
+    ".docx": "Word Documents",
+    ".ppt": "Powerpoint Documents",
+    ".pptx": "Powerpoint Documents",
+    ".pdf": "PDF Files",
+    ".xlsx": "Excel Documents",
+    ".xls": "Excel Documents",
+    ".m4a": "AUDIOS",
+    ".tmp": "TMP",
+    ".conf": "CONF",
+    ".mp4": "VIDEOS",
+    ".zoom": "ZOOM",
+    ".exe": "EXE",
+    ".log": "LOG",
+    ".tag": "TAG",
+    ".webp": "WEBPAGES"
+  }
 }
