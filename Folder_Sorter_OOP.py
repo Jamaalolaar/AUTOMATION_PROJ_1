@@ -224,19 +224,5 @@ class File_Manager:
 
         
 
-Config = ConfigManager()
-Logger = LoggerManager(Config)
-DM = Directory_Manager(Logger)
-extensions = ConfigManager().config_data
-if __name__ == "__main__":
-    try:
-        # Create File_Manager instance
-        Sorter = File_Manager(Config, Logger, DM)
-        #Sorter.fold_file_by_extension()
-        #Sorter.directory.delete_empty(Sorter.base_path)
-        #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-        Sorter.unfold_files(Sorter.base_path)
 
-    except Exception as e:
-        Logger.log_error(f"Critical error: {e}")
 
