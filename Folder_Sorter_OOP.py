@@ -2,54 +2,7 @@ from pathlib import Path
 import shutil
 import logging
 from Config_Manager import ConfigManager
-
-class Logger_Manager:
-    """
-    Manages and configures separate loggers for info and error messages
-    """
-    def __init__(self, config):
-        """
-        Initialize Logger_Manager with separate info and error loggers
-
-        self: Instance of Logger_Manager
-        info_log_file: Path to the info log file
-        error_log_file: Path to the error log file
-        """
-        self.config_data = config.config_data.get('log_files', {})
-        info_log_file = self.config_data.get('log_files', {}).get('Info_log', 'Info Logs.log')
-        error_log_file = self.config_data.get('log_files', {}).get('Error_log', 'Error logs.log')
-        self.info_logger = self._setup_logger("info_logger", self.config_data.get('Info_log'))
-        self.error_logger = self._setup_logger("error_logger",self.config_data.get('Error_log'))
-    def _setup_logger(self, name, log_file):
-        """
-        Create and configure a logger that writes debug messages to a specified file
-
-        self: Instance of Logger_Manager
-        name: Name of the logger to create
-        log_file: Path to the log file for storing log messages
-        return: Configured logger instance
-        return type: Logger
-        """
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG)
-        
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
-        #Handler Creation
-        handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
-        handler.setLevel(logging.DEBUG)
-        handler.setFormatter(formatter)
-
-        logger.addHandler(handler)
-        return logger
-    def log_info(self, message):
-        """Logs info"""
-        self.info_logger.info(message)
-    def log_error(self, message):
-        """Logs error"""
-        self.error_logger.error(message)
-
-
+from Logger_Manager import LoggerManager
 
 class Directory_Manager:
     def __init__(self, logger):
@@ -203,9 +156,9 @@ class File_Manager:
                 source = file_path
                 destination = self.path/file_path.name
                 self.move_file(source, destination)
-                self.logger.log_info(f"{self.path} was successfully unfolded")
             self.directory.delete_empty(self.path)
         self.directory.delete_empty(self.path)
+        self.logger.log_info(f"{self.path} was successfully unfolded")    
     
     def rename_file(self, file_name):
         """Renames a file found by `file_name` (stem without suffix).
@@ -272,17 +225,17 @@ class File_Manager:
         
 
 Config = ConfigManager()
-Logger = Logger_Manager(Config)
+Logger = LoggerManager(Config)
 DM = Directory_Manager(Logger)
 extensions = ConfigManager().config_data
 if __name__ == "__main__":
     try:
         # Create File_Manager instance
         Sorter = File_Manager(Config, Logger, DM)
-        Sorter.fold_file_by_extension()
+        #Sorter.fold_file_by_extension()
         #Sorter.directory.delete_empty(Sorter.base_path)
         #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-        #Sorter.unfold_files(Sorter.base_path)
+        Sorter.unfold_files(Sorter.base_path)
 
     except Exception as e:
         Logger.log_error(f"Critical error: {e}")
