@@ -6,10 +6,6 @@ def main():
     """
     Orchestrates the FolderSorter workflow 
     """
-
-    # Initialize configuration
-    
-
     Config = ConfigManager()
     Logger = LoggerManager(Config)
     DM = Directory_Manager(Logger)
@@ -18,13 +14,11 @@ def main():
     if __name__ == "__main__":
         try:
             Sorter = FM
-            #Sorter.fold_file_by_extension()
+            Sorter.fold_file_by_extension()
             #Sorter.directory.delete_empty(Sorter.base_path)
             #Sorter.rename_file(input("Enter the name of the file to be renamed: "))
-            Sorter.unfold_files(Sorter.base_path)
+            #Sorter.unfold_files(Sorter.base_path)
 
         except Exception as e:
             Logger.log_error(f"Critical error: {e}")
-
-    if __name__ == "__main__":
-        main()
+main()

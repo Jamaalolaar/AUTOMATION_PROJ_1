@@ -13,18 +13,17 @@
     ".doc": "Word Documents",
     ".docx": "Word Documents",
     ".ppt": "Powerpoint Documents",
-    ".pptx": "Powerpoint Documents",
-    ".pdf": "PDF Files",
-    ".xlsx": "Excel Documents",
-    ".xls": "Excel Documents",
+    ".pptx": "POWERPOINT PRESENTATIONS",
+    ".pdf": "PDF FILES",
     ".m4a": "AUDIOS",
     ".tmp": "TMP FILES",
     ".mp4": "VIDEOS",
-    ".zoom": "ZOOM FILES",
+    ".zoom": "ZOOM",
     ".log": "LOGS",
+    ".xlsx": "EXCEL SHEETS",
     ".conf": "CONF FILES",
     ".exe": "EXE FILES",
-    ".webp": "WEBPAGES",
-    ".tag": "TAG FILES"
+    ".webp": "Others",
+    ".tag": "Others"
   }
 }

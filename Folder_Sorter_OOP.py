@@ -23,10 +23,6 @@ class Directory_Manager:
         return path.exists() and path.is_dir()
     def scan_all(self, path):
         """Recursively traverse through all files and directories in the given path.
-        
-        Args:
-            path: A Path object representing the directory to scan
-            
         Yields:
             Path objects for both files and directories found during traversal
         """
@@ -73,19 +69,6 @@ class File_Manager:
         self.logger = logger
         self.directory = directory
         
-    def check_extensions(self):
-        """Checks if the file path is a file and if all the extensions (file suffix) are present in the dictionary 'extension_dict'. If an
-        unrecognized extension is detected, it also adds a new extension to the initialized extension_dict  by calling the add_new_extension function"""
-        for file_path in self.base_path.iterdir():
-            if file_path.is_file():
-                ext = file_path.suffix
-                if ext not in self.extension_dict:
-                    response = input(f'Unrecognized extension {ext}! Do you want to assign a folder name to this extension? y/n: ')
-                    if response == 'y':
-                        self.add_new_extension(ext)
-                    elif response == 'n':
-                        self.extension_dict[ext] = 'Others'
-        
     def move_file(self, src, dest):
         """Moves a single file from src to dst and logs the movement"""
         try:
@@ -102,8 +85,12 @@ class File_Manager:
             if file_path.is_file():
                 try:
                     ext = file_path.suffix
-                    if ext not in self.extension_dict:
-                        self.add_new_extension(ext)
+                    while ext not in self.extension_dict:
+                        response = input(f'Unrecognized extension {ext}! Do you want to assign a folder name to this extension? yes/no: ')
+                        if response.lower() == 'yes' or response.lower() == 'y':
+                            self.add_new_extension(ext)
+                        elif response.lower() == 'no' or response.lower() == 'n':
+                            self.add_new_extension(ext, 'Others')
                     
                     folder_name = self.extension_dict.get(ext)
                     new_path = self.base_path / folder_name
@@ -139,14 +126,14 @@ class File_Manager:
         self.logger.log_info(f'File {file_name} not found in {self.base_path} or its subdirectories.')
         return None
 
-    def add_new_extension(self, ext):
+    def add_new_extension(self, ext,Folder_name=None):
         """Adds a new extension and its folder name to the extension dictionary 'extension_dict' and logs it"""
-        Folder_name = input(f'Enter the folder_name for {ext} files: ')
-        self.extension_dict[ext] = Folder_name
+        if Folder_name is None:
+            Folder_name = input(f'Enter the folder_name for {ext} files: ')
         self.config.config_data['extensions'][ext] = Folder_name
         self.config.update_config(ext, Folder_name)
-        self.logger.log_info(f'A new extension {ext} was added to the extensions dictionary!')
-
+        self.extension_dict[ext] = Folder_name
+        self.logger.log_info(f'A new extension {ext} was added to the extensions dictionary!')            
         
     def unfold_files(self, path):
         """Moves files from subdirectories back to the parent directory and deletes empty folders afterwards"""
