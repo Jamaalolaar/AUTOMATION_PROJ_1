@@ -62,7 +62,7 @@ class ConfigManager:
         except Exception as e:
             print(f"Failed to update config: {e}")
             return False
-        def load_overrides(self, override:dict):
-            for key, value in override.items(): #What this line does is to iterate through the key-value pairs in the override dictionary
-                if key in self.config_data:#This line checks if the key from the override dictionary exists in the config_data dictionary
-                    self.config_data[key] = value #what this line does is to update the config_data with the override values
+    def load_overrides(self, override:dict):
+        for key, value in override.items(): #What this line does is to iterate through the key-value pairs in the override dictionary
+            if key in self.config_data:#This line checks if the key from the override dictionary exists in the config_data dictionary
+                self.config_data[key] = value #what this line does is to update the config_data with the override values
