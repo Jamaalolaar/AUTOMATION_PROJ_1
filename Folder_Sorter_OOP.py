@@ -76,11 +76,13 @@ class File_Manager:
         except (shutil.Error, OSError) as e:
             self.logger.log_error(f'Failed to move {src.name} to {dest}: {e}')
         
-    def fold_file_by_extension(self):
+    def fold_file_by_extension(self, path=None):
         """
         Move files based on their extensions into categorized folders and logs every movement and error .
         """
-        for file_path in self.directory.scan_all(self.base_path):
+        if path is None:
+            path = self.base_path
+        for file_path in self.directory.scan_all(path):
             if file_path.is_file():
                 try:
                     ext = file_path.suffix

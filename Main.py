@@ -26,6 +26,19 @@ def main():
     if __name__ == "__main__":
         try:
             Sorter = FM
+            if args.command == "sort":
+                if args.target:
+                    Sorter.base_path = Sorter.base_path / args.target
+                else: pass
+                print(Sorter.base_path)
+                Sorter.fold_file_by_extension(Sorter.base_path)
+            elif args.command == "unsort":
+                if args.target:
+                    Sorter.base_path = Sorter.base_path / args.target
+                else: pass
+                print(Sorter.base_path)
+                Sorter.unfold_files(Sorter.base_path)
+                
             #Sorter.fold_file_by_extension()
             #Sorter.directory.delete_empty(Sorter.base_path)
             #Sorter.rename_file(input("Enter the name of the file to be renamed: "))

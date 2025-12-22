@@ -7,5 +7,9 @@ def parse_cli_arguments():
     sort_parser = subparsers.add_parser("sort")
     sort_parser.add_argument("--dry-run", action="store_true", help="Simulate the actions without making any changes.")
     sort_parser.add_argument("--target", type=str)
+
+    unsort_parser = subparsers.add_parser("unsort")
+    unsort_parser.add_argument("--dry-run", action="store_true", help="Simulate the actions without making any changes.")
+    unsort_parser.add_argument("--target", type=str)
     #metavar
     return parser.parse_args()
