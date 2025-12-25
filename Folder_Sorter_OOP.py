@@ -95,6 +95,7 @@ class File_Manager:
                     
                     folder_name = self.extension_dict.get(ext)
                     new_path = self.base_path / folder_name
+
                     
                     if not self.directory.exists(new_path):
                         self.directory.create_dir(new_path)

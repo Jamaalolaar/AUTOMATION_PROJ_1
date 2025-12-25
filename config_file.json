@@ -24,6 +24,7 @@
     ".conf": "CONF FILES",
     ".exe": "EXE FILES",
     ".webp": "Others",
-    ".tag": "Others"
+    ".tag": "Others",
+    ".WAV": "AUDIO FILES"
   }
 }
