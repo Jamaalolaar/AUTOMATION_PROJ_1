@@ -16,9 +16,13 @@ def parse_cli_arguments():
     rename_parser.add_argument("file_name", type=str, help="Name of the file to be renamed (without extension).")
     rename_parser.add_argument("new_name", type=str, help="New name for the file (with or without extension).")
 
+    find_parser = subparsers.add_parser("find")
+    find_parser.add_argument("file_name", type=str, help="Name of the file to be found (without extension).")
+    find_parser.add_argument("--target", type=str, help= "Directory to search in (relative to base path).")
 
-
-
+    delete_parser = subparsers.add_parser("delete")
+    delete_parser.add_argument("file_name", type=str, help="Name of the file to be deleted (without extension).")
+    delete_parser.add_argument("--target", type=str, help= "Directory to search in (relative to base path).")
 
     #metavar
     return parser.parse_args()
