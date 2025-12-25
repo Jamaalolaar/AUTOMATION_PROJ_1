@@ -117,11 +117,14 @@ class File_Manager:
                     self.logger.log_error(f"Error processing file {file_path}: {e}")
              
         self.directory.delete_empty(self.base_path)
-    def find_file(self, file_name):
+    def find_file(self, file_name, Path=None):
         """Searches for a file with the given name in the base_path and its subdirectories.
         Returns the Path object if found, otherwise returns None."""
-        for file_path in self.directory.scan_all(self.base_path):
+        if Path is None:
+            Path = self.base_path
+        for file_path in self.directory.scan_all(Path):
             if file_path.is_file() and file_path.stem == file_name:
+                print(f'File {file_name} found at {file_path}')
                 self.logger.log_info(f'File {file_name} found at {file_path}')
                 return file_path
         print(f'File {file_name} not found in {self.base_path} or its subdirectories. Check file name and try again.')
@@ -193,9 +196,9 @@ class File_Manager:
         except Exception as e:
             self.logger.log_error(f"Failed to rename {old_path}: {e}")
     
-    def delete_file(self, file_name):
+    def delete_file(self, file_name, Path=None):
         """Deletes a specified file and logs the action"""
-        file_path = self.find_file(file_name)
+        file_path = self.find_file(file_name,Path)
         if file_path is None:
             self.logger.log_error(f"Cannot delete: file '{file_name}' not found.")
             return

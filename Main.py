@@ -29,6 +29,9 @@ def main():
                 "unsort": Commands_Map.unsort_cmd,
                 "find": Commands_Map.find_cmd,
                 "delete": Commands_Map.delete_cmd,
+                "move": Commands_Map.move_cmd,
+                "delete_empty_dirs": Commands_Map.delete_empty_dirs_cmd,
+                "create": Commands_Map.create_folder_cmd,
             }
 
             if args.command in command_map:

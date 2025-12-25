@@ -18,11 +18,28 @@ def parse_cli_arguments():
 
     find_parser = subparsers.add_parser("find")
     find_parser.add_argument("file_name", type=str, help="Name of the file to be found (without extension).")
-    find_parser.add_argument("--target", type=str, help= "Directory to search in (relative to base path).")
+    find_parser.add_argument("--target", type=str, help= "Directory to search in.")
 
     delete_parser = subparsers.add_parser("delete")
     delete_parser.add_argument("file_name", type=str, help="Name of the file to be deleted (without extension).")
-    delete_parser.add_argument("--target", type=str, help= "Directory to search in (relative to base path).")
+    delete_parser.add_argument("--target", type=str, help= "Directory to search in.")
+
+    move_parser = subparsers.add_parser("move")
+    move_parser.add_argument("file_name", type=str, help="Name of the file to be moved (without extension).")
+    move_parser.add_argument("--destination", type=str, help="Destination directory.")
+
+    delete_empty_parser = subparsers.add_parser("delete_empty_dirs")
+    delete_empty_parser.add_argument("--target", type=str, help="Directory to delete empty folders from.")
+
+    create_folder_parser = subparsers.add_parser("create")
+    create_folder_parser.add_argument("folder_name", type=str, help="Name of the folder to be created.")
+    create_folder_parser.add_argument("--parent", type=str, help="Parent directory where the folder will be created.")
+
+    
+
+
+
+
 
     #metavar
     return parser.parse_args()
