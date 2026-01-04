@@ -4,7 +4,7 @@ class ConfigManager:
         self.config_file = config_file
 
         self.default_config = {
-            "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\CHAOS",
+            "base_path": "C:\\Users\\LENOVO\\Desktop\\AUTOMATION_PROJ_1\\",
             "log_files": {
                 "Info_log": "Info Logs.log",
                 "Error_log": "Error logs.log"

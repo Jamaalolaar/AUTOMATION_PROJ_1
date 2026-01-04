@@ -94,7 +94,7 @@ class File_Manager:
                             self.add_new_extension(ext, 'Others')
                     
                     folder_name = self.extension_dict.get(ext)
-                    new_path = self.base_path / folder_name
+                    new_path = path / folder_name
 
                     
                     if not self.directory.exists(new_path):
@@ -140,17 +140,18 @@ class File_Manager:
         self.extension_dict[ext] = Folder_name
         self.logger.log_info(f'A new extension {ext} was added to the extensions dictionary!')            
         
-    def unfold_files(self, path):
+    def unfold_files(self, path = None):
         """Moves files from subdirectories back to the parent directory and deletes empty folders afterwards"""
-        self.path = Path(path)
-        for file_path in self.directory.scan_all(self.path):
+        if path is None:
+            path = self.base_path
+        for file_path in self.directory.scan_all(path):
             if file_path.is_file():
                 source = file_path
-                destination = self.path/file_path.name
+                destination = path/file_path.name
                 self.move_file(source, destination)
-            self.directory.delete_empty(self.path)
-        self.directory.delete_empty(self.path)
-        self.logger.log_info(f"{self.path} was successfully unfolded")    
+            self.directory.delete_empty(path)
+        self.directory.delete_empty(path)
+        self.logger.log_info(f"{path} was successfully unfolded")    
     
     def rename_file(self, file_name):
         """Renames a file found by `file_name` (stem without suffix).
