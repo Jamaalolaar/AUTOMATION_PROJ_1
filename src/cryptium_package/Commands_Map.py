@@ -1,9 +1,8 @@
-from Folder_Sorter_OOP import Directory_Manager, File_Manager, Path
-from Config_Manager import ConfigManager
-from Logger_Manager import LoggerManager
-from Command_Line import parse_cli_arguments
+from .Folder_Sorter_OOP import Directory_Manager, File_Manager, Path
+from .Config_Manager import ConfigManager
+from .Logger_Manager import LoggerManager
+from .Command_Line import parse_cli_arguments
 import argparse
-
 Config = ConfigManager()
 Logger = LoggerManager(Config)
 DM = Directory_Manager(Logger)
@@ -11,7 +10,7 @@ Cryptium = File_Manager(Config, Logger, DM)
 args = parse_cli_arguments()
 
 def rename_cmd(args):
-    Cryptium.rename_file(args.file_name, args.new_name)
+    Cryptium.rename_file(args.file_name)
 def sort_cmd(args):
     if args.target:
         target_path = Cryptium.base_path / args.target

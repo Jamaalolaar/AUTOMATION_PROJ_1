@@ -1,3 +1,0 @@
-def rename_cmd():
-    
-    

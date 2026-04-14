@@ -1,7 +1,7 @@
 from pathlib import Path
 import shutil
-from Config_Manager import ConfigManager
-from Logger_Manager import LoggerManager
+from .Config_Manager import ConfigManager
+from .Logger_Manager import LoggerManager
 
 class Directory_Manager:
     def __init__(self, logger):
@@ -25,11 +25,17 @@ class Directory_Manager:
         Yields:
             Path objects for both files and directories found during traversal
         """
-        for item in path.iterdir():
-            yield item  # First yield the item itself (file or directory)
-            if item.is_dir():
-                # If it's a directory, recursively scan its contents
-                yield from self.scan_all(item)
+        try:
+            for item in path.iterdir():
+                yield item  # First yield the item itself (file or directory)
+                if item.is_dir():
+                    # If it's a directory, recursively scan its contents
+                    try:
+                        yield from self.scan_all(item) 
+                    except PermissionError:
+                        self.logger.log_info(f"Access denied to {item}, skipping...")
+        except Exception as e:
+            self.logger.log_error(f"Error scanning directory {path}: {e}")
     def is_empty(self, path):
         """Checks if a directory is empty and returns True if it is, False otherwise"""
         return not any(path.iterdir())
@@ -94,7 +100,11 @@ class File_Manager:
                             self.add_new_extension(ext, 'Others')
                     
                     folder_name = self.extension_dict.get(ext)
-                    new_path = path / folder_name
+                    if folder_name is not None:
+                        new_path = path / folder_name
+                    else:
+                        new_path = path
+                    
 
                     
                     if not self.directory.exists(new_path):
