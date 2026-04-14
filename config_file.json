@@ -25,6 +25,10 @@
     ".exe": "EXE FILES",
     ".webp": "Others",
     ".tag": "Others",
-    ".WAV": "AUDIO FILES"
+    ".WAV": "AUDIO FILES",
+    ".html": "HTML files",
+    "": "! files",
+    ".css": "CSS files",
+    ".py": "Python files"
   }
 }

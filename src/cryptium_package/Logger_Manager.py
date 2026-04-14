@@ -23,6 +23,11 @@ class LoggerManager:
 
         """
         logger = logging.getLogger(name)
+        
+        # Prevent duplicate handlers if logger already exists
+        if logger.handlers:
+            return logger
+        
         logger.setLevel(logging.DEBUG)
         
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")

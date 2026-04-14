@@ -14,15 +14,15 @@ def rename_cmd(args):
 def sort_cmd(args):
     if args.target:
         target_path = Cryptium.base_path / args.target
-    if args.filepath:
-        target_path = Path(args.filepath)
+    if args.folderpath:
+        target_path = Path(args.folderpath)
     Cryptium.fold_file_by_extension(target_path)
 
 def unsort_cmd(args):
     if args.target:
         target_path = Cryptium.base_path / args.target
-    if args.filepath:
-        target_path = Path(args.filepath)
+    if args.folderpath:
+        target_path = Path(args.folderpath)
     Cryptium.unfold_files(target_path)
 def find_cmd(args):
     Cryptium.find_file(args.file_name, Path(args.target)    if args.target else None)

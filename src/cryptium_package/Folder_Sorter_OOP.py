@@ -122,7 +122,6 @@ class File_Manager:
                             counter += 1
                     
                     self.move_file(file_path, dest_path)
-                    self.logger.log_info(f'File was successfully {file_path.name} moved to {dest_path}') 
                 except Exception as e:
                     self.logger.log_error(f"Error processing file {file_path}: {e}")
              
