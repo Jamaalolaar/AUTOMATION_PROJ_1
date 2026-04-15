@@ -64,8 +64,11 @@ class File_Manager:
         """Initializes File_Manager with config object, logger, and directory manager."""
         self.config = config
         base_path = config.get('base_path')
+        if not base_path:
+            self.base_path = Path.cwd()  # Default to current working directory if not specified
+        else:
+            self.base_path = base_path
         extension_dict = self.config.get('extensions')
-        self.base_path = Path(base_path)
         
         if extension_dict is None:
             self.extension_dict = dict(self.EXTENSIONS_DEFAULT)
@@ -128,36 +131,55 @@ class File_Manager:
         self.directory.delete_empty(self.base_path)
     def find_file(self, file_name, Path=None):
         """Searches for a file with the given name in the base_path and its subdirectories.
-        Returns the Path object if found, otherwise returns None."""
+        Returns the Path object if found. If not found, suggests similar file names using fuzzy matching.
+        Returns None if no file is found and user declines suggestions."""
         if Path is None:
             Path = self.base_path
-            all_files = self.directory.scan_all(Path)
-        for file_path in all_files:
-            if file_path.is_file() and file_path.stem == file_name:
-                print(f'File {file_name} found at {file_path}')
-                self.logger.log_info(f'File {file_name} found at {file_path}')
-                return file_path
-            elif file_path.is_file() and file_path.stem != file_name:
-                try:
-                    matches = self._match_search_query(file_name, [file_path.stem], limit=4)
-                    if matches and matches[0][1] >= 80:  # Threshold for fuzzy match
-                        print("Did you mean:")
-                        for i, (match) in enumerate(matches, 1):
-                            print(f"  {i}. {match}")
-                        
-                        response = input("Select option number or 'n' to cancel: ").strip()
-                        if response.isdigit() and 1 <= int(response) <= len(matches):
-                            selected_idx = int(response) - 1
-                            print(f'File {matches[selected_idx][0]} found at {file_path}')
-                            self.logger.log_info(f'File {matches[selected_idx][0]} found at {file_path}')
-                            return file_path
-                        elif response.lower() == 'no':
-                            continue
-                except Exception as e:
-                    self.logger.log_error(f"Error finding file {file_name}: {e}")
-        print(f'File {file_name} not found in {self.base_path} or its subdirectories. Check file name and try again.')
-        self.logger.log_info(f'File {file_name} not found in {self.base_path} or its subdirectories.')
-        return None
+        
+        # First pass: try exact match
+        file_map = {}
+        for file_path in self.directory.scan_all(Path):
+            if file_path.is_file():
+                file_map[file_path.stem] = file_path
+                if file_path.stem == file_name:
+                    print(f'File {file_name} found at {file_path}')
+                    self.logger.log_info(f'File {file_name} found at {file_path}')
+                    return file_path
+        
+        # Exact match not found, collect fuzzy matches
+        if file_map:
+            try:
+                matches = self._match_search_query(file_name, list(file_map.keys()), limit=5)
+                # Filter matches by similarity threshold (80%)
+                filtered_matches = [m for m in matches if m[1] >= 70]
+                
+                if filtered_matches:
+                    print("Did you mean:")
+                    for i, (match, score, _) in enumerate(filtered_matches, 1):
+                        print(f"  {i}. {match} ")
+                    
+                    response = input("Enter the number of the desired file (or 'no' to cancel): ").strip()
+                    if response.isdigit() and 1 <= int(response) <= len(filtered_matches):
+                        selected_match = filtered_matches[int(response) - 1][0]
+                        selected_path = file_map[selected_match]
+                        print(f'File {selected_match} found at {selected_path}')
+                        self.logger.log_info(f'File {selected_match} found at {selected_path} (fuzzy match)')
+                        return selected_path
+                    elif response.lower() == 'no':
+                        print(f'File "{file_name}" not found in {self.base_path} or its subdirectories. Check the file name and try again.')
+                        self.logger.log_info(f'File "{file_name}" not found.')
+                        return None
+                else:
+                    print(f'File "{file_name}" not found in {self.base_path} or its subdirectories. Check the file name and try again.')
+                    self.logger.log_info(f'File "{file_name}" not found and no similar matches found.')
+                    return None
+            except Exception as e:
+                self.logger.log_error(f"Error finding file {file_name}: {e}")
+                return None
+        else:
+            print(f'No files found in {self.base_path} or its subdirectories.')
+            self.logger.log_info(f'No files found in directory.')
+            return None
 
     def add_new_extension(self, ext,Folder_name=None):
         """Adds a new extension and its folder name to the extension dictionary 'extension_dict' and logs it"""
