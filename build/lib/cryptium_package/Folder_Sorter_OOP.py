@@ -1,8 +1,8 @@
 from pathlib import Path
 import shutil
-from cryptium_package.Config_Manager import ConfigManager
-from cryptium_package.Logger_Manager import LoggerManager
-from rapidfuzz import process
+from .Config_Manager import ConfigManager
+from .Logger_Manager import LoggerManager
+
 class Directory_Manager:
     def __init__(self, logger):
         """Initialize"""
@@ -131,30 +131,11 @@ class File_Manager:
         Returns the Path object if found, otherwise returns None."""
         if Path is None:
             Path = self.base_path
-            all_files = self.directory.scan_all(Path)
-        for file_path in all_files:
+        for file_path in self.directory.scan_all(Path):
             if file_path.is_file() and file_path.stem == file_name:
                 print(f'File {file_name} found at {file_path}')
                 self.logger.log_info(f'File {file_name} found at {file_path}')
                 return file_path
-            elif file_path.is_file() and file_path.stem != file_name:
-                try:
-                    matches = self._match_search_query(file_name, [file_path.stem], limit=4)
-                    if matches and matches[0][1] >= 80:  # Threshold for fuzzy match
-                        print("Did you mean:")
-                        for i, (match) in enumerate(matches, 1):
-                            print(f"  {i}. {match}")
-                        
-                        response = input("Select option number or 'n' to cancel: ").strip()
-                        if response.isdigit() and 1 <= int(response) <= len(matches):
-                            selected_idx = int(response) - 1
-                            print(f'File {matches[selected_idx][0]} found at {file_path}')
-                            self.logger.log_info(f'File {matches[selected_idx][0]} found at {file_path}')
-                            return file_path
-                        elif response.lower() == 'no':
-                            continue
-                except Exception as e:
-                    self.logger.log_error(f"Error finding file {file_name}: {e}")
         print(f'File {file_name} not found in {self.base_path} or its subdirectories. Check file name and try again.')
         self.logger.log_info(f'File {file_name} not found in {self.base_path} or its subdirectories.')
         return None
@@ -242,11 +223,6 @@ class File_Manager:
                     self.logger.log_info(f"Deleted file: {file_path}")
                 except Exception as e:
                     self.logger.log_error(f"Failed to delete {file_path}: {e}")
-    
-    def _match_search_query(self, query, choices, limit=5):
-        """Helper method to perform fuzzy matching of a search query against a list of choices."""
-        matches = process.extract(query, choices, limit=limit)
-        return matches
 
         
 

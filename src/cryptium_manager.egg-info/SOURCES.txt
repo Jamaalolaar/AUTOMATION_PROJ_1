@@ -12,3 +12,4 @@ src/cryptium_package/Cryptium.py
 src/cryptium_package/Folder_Sorter_OOP.py
 src/cryptium_package/Logger_Manager.py
 src/cryptium_package/__init__.py
+src/cryptium_package/cryptium.py
